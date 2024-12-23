@@ -1,5 +1,5 @@
  ![WordVault](https://socialify.git.ci/RizaMamedow/WordVault/image?custom_description=WordVault+is+a+SwiftUI-based+dictionary+application.&description=1&font=Raleway&language=1&owner=1&pattern=Circuit+Board&theme=Light)
- WordVault 🚀  
+ # WordVault 🚀  
 
 **WordVault** is a practical SwiftUI application created following the principles outlined in Robert C. Martin's *"Clean Code"*. This project serves as a hands-on exercise to understand and apply the theory of writing clean, readable, and maintainable code.  
 
