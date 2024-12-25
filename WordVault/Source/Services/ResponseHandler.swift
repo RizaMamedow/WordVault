@@ -24,15 +24,11 @@ class ResponseHandler<T: Decodable> {
         completion: @escaping (Result<T, APIError>) -> Void
     ) -> Void {
         URLSession.shared.dataTask(with: request) { data, response, error in
-            if let apiError = self.handleTaskError(error) {
-                completion(.failure(apiError))
-                return
-            }
-            
-            if let notFound = self.handleWordNotFoundError(response: response) {
-                completion(.failure(notFound))
-                return
-            }
+            self.checkErrors(
+                error: error,
+                response: response,
+                completion: completion
+            )
             
             guard let data = data else {
                 completion(.failure(.noData))
@@ -43,25 +39,44 @@ class ResponseHandler<T: Decodable> {
         }.resume()
     }
     
+    private func checkErrors(
+        error: (any Error)?,
+        response: URLResponse?,
+        completion: @escaping (Result<T, APIError>) -> Void
+    ) -> Void {
+        if let apiError = self.handleTaskError(error) {
+            completion(.failure(apiError))
+            return
+        }
+        
+        if self.checkResponseNullability(response) {
+            guard let notFound = self.handleWordNotFoundError(response: response!) else {
+                return
+            }
+            
+            completion(.failure(notFound))
+        }
+    }
+    
     private func handleTaskError(_ error: (any Error)?) -> APIError? {
         guard let error = error else { return nil }
         return .requestFailed(error)
     }
     
-    private func handleWordNotFoundError(response: URLResponse?) -> APIError? {
-        guard let httpResponse = self.getHTTPUrlResponse(response) else {
-            return .noData
-        }
-        
-        if httpResponse.statusCode == 404 {
+    private func handleWordNotFoundError(response: URLResponse) -> APIError? {
+        if self.getHttpUrlResponse(response).statusCode == 404 {
             return .wordNotFound
         }
         
         return nil
     }
     
-    private func getHTTPUrlResponse(_ response: URLResponse?) -> HTTPURLResponse? {
-        return response as? HTTPURLResponse
+    private func getHttpUrlResponse(_ response: URLResponse) -> HTTPURLResponse {
+        return response as! HTTPURLResponse
+    }
+    
+    private func checkResponseNullability(_ response: URLResponse?) -> Bool {
+        return response != nil
     }
     
     private func performTaskDataDecoding (
