@@ -9,48 +9,27 @@ import Foundation
 
 
 class NetworkService {
-    private let requestBuilder: RequestBuilder
-    private let responseHandler: ResponseHandler
-
-    init(
-        requestBuilder: RequestBuilder = RequestBuilder(),
-        responseHandler: ResponseHandler = ResponseHandler()
-    ) {
-        self.requestBuilder = requestBuilder
-        self.responseHandler = responseHandler
-    }
-
-    
-    private func validateURL(_ endpoint: String) -> URL? {
-        guard let url = URL(string: endpoint) else { return nil }
-        return url
-    }
-
     func sendRequest<T: Decodable>(
         endpoint: String,
         method: HTTPMethod = .get,
-        parameters: [String: Any]? = nil,
-        headers: [String: String]? = nil,
-        responseType: T.Type,
+        parameters: [String: Any] = [:],
+        headers: [String: String] = [:],
         completion: @escaping (Result<T, APIError>) -> Void
     ) {
-        
         guard let url = URL(string: endpoint) else {
             completion(.failure(.invalidURL))
             return
         }
         
-        let request = requestBuilder.buildRequest(
+        let requestBuilder: RequestBuilder = RequestBuilder(
+            url: url,
             method: method,
-            parameters: parameters,
             headers: headers,
-            url: url
+            parameters: parameters
         )
+        let request = requestBuilder.buildRequest()
         
-        responseHandler.handleResponse(
-            with: request,
-            responseType: responseType,
-            completion: completion
-        )
+        let responseHandler: ResponseHandler = ResponseHandler<T>(request: request)
+        responseHandler.handleResponse(completion: completion)
     }
 }
