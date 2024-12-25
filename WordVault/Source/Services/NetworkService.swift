@@ -1,5 +1,5 @@
 //
-//  HttpService.swift
+//  NetworkService.swift
 //  WordVault
 //
 //  Created by Riza Mamedov on 22.12.2024.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-class HttpService {
+class NetworkService {
     private let requestBuilder: RequestBuilder
     private let responseHandler: ResponseHandler
 

@@ -7,8 +7,8 @@
 import Foundation
 
 
-final class APIService: HttpService {
-    private let httpService: HttpService
+final class APIService: NetworkService {
+    private let httpService: NetworkService
 
     private let apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en"
     
@@ -17,7 +17,7 @@ final class APIService: HttpService {
     }
 
     
-    private init(httpService: HttpService = HttpService()) {
+    private init(httpService: NetworkService = NetworkService()) {
         self.httpService = httpService
     }
     

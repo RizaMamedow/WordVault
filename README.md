@@ -28,7 +28,7 @@ WordVault/
 ```
 
 ## Authors
-1. [RizaMamedow](https://github.com/RizaMamedow/) <riza.mamedow22@gmail.com> - is author of these application 
+1. [RizaMamedow](https://github.com/RizaMamedow/) <riza.mamedow22@gmail.com> - is author of this application 
 
 
 ## License 📜

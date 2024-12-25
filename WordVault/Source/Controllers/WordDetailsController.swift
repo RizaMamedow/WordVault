@@ -11,7 +11,7 @@ class WordDetailsController: ObservableObject {
     @Published var errorMessage: String?
 
     var wordData: DictionaryAPIModel? {
-        return _wordData.first ?? nil
+        return self.getWordData()
     }
     
     var isLoading: Bool {
@@ -22,14 +22,26 @@ class WordDetailsController: ObservableObject {
         return errorMessage != nil
     }
     
+    private func getWordData() -> DictionaryAPIModel? {
+        return _wordData.first ?? nil
+    }
+    
+    private func setWordData(_ data: [DictionaryAPIModel]) -> Void {
+        self._wordData = data
+    }
+    
+    private func setErrorMessage(_ error: Error) -> Void {
+        self.errorMessage = error.localizedDescription
+    }
+    
     func loadWordData(word: String) {
         APIService.shared.fetchWordData(word: word) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    self?._wordData = data
+                    self?.setWordData(data)
                 case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+                    self?.setErrorMessage(error)
                 }
             }
         }

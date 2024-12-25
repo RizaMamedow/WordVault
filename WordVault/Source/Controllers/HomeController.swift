@@ -18,4 +18,6 @@ class HomeController: ObservableObject {
     func shuffleWords(limit: Int = 300) -> Void {
         shuffledWordArray = Array(Store.popularWords.shuffled().prefix(limit))
     }
+    
+    func refreshScreen() -> Void { shuffleWords(limit: 100) }
 }

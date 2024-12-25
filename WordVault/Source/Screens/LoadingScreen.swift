@@ -9,14 +9,20 @@ import SwiftUI
 
 
 struct LoadingScreen: View {
+    @StateObject private var controller: LoadingController = .init()
+
     var body: some View {
         VStack {
             ProgressView()
                 .scaleEffect(2)
-            Text("Loading...")
-                .padding()
-                .font(.subheadline)
-                .foregroundStyle(.gray)
+            
+            Text("Loading" + String(repeating: ".", count: controller.loadingTextDotCount))
+               .padding()
+               .font(.subheadline)
+               .foregroundStyle(.gray)
+               .onReceive(controller.timer) { _ in
+                   controller.changeLoadingTextDotCount()
+               }
         }
     }
 }

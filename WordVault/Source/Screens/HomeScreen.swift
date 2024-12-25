@@ -29,9 +29,14 @@ struct HomeScreen: View {
                         Image(systemName: "magnifyingglass")
                     }
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink(destination: WordDetailScreen(word: controller.getRandomWord())) {
+                        Image(systemName: "dice")
+                    }
+                }
             }
             .refreshable {
-                controller.shuffleWords(limit: 100)
+                controller.refreshScreen()
             }
             .onAppear {
                 controller.shuffleWords(limit: 100)
