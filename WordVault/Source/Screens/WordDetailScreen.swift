@@ -21,6 +21,9 @@ struct WordDetailScreen: View {
                 LoadingScreen()
             }
         }
+        .refreshable {
+            controller.loadWordData(word: word)
+        }
         .onAppear{
             controller.loadWordData(word: word)
         }
