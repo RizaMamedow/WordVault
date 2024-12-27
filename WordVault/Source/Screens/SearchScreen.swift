@@ -10,7 +10,6 @@
 import SwiftUI
 
 struct SearchScreen: View {
-    
     @State var wordFieldValue: String = ""
     
     @State var isWordFieldEmpty: Bool = true

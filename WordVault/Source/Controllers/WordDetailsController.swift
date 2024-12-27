@@ -7,7 +7,7 @@
 import Foundation
 
 class WordDetailsController: ObservableObject {
-    @Published var _wordData: [DictionaryAPIModel] = []
+    @Published private var _wordData: [DictionaryAPIModel] = []
     @Published var errorMessage: String?
 
     var wordData: DictionaryAPIModel? {
@@ -30,8 +30,8 @@ class WordDetailsController: ObservableObject {
         self._wordData = data
     }
     
-    private func setErrorMessage(_ error: Error) -> Void {
-        self.errorMessage = error.localizedDescription
+    private func setErrorMessage(_ message: String) -> Void {
+        self.errorMessage = message
     }
     
     func loadWordData(word: String) {
@@ -41,7 +41,7 @@ class WordDetailsController: ObservableObject {
                 case .success(let data):
                     self?.setWordData(data)
                 case .failure(let error):
-                    self?.setErrorMessage(error)
+                    self?.setErrorMessage(error.localizedDescription)
                 }
             }
         }
