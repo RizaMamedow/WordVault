@@ -28,6 +28,7 @@ struct ErrorScreen: View {
             .tint(.red)
             .foregroundStyle(.white)
         }
+        .padding()
     }
 }
 

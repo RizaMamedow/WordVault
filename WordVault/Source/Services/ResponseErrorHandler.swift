@@ -19,40 +19,35 @@ class ResponseErrorHandler<T: Decodable> {
     }
     
     /// if this function returns true it's means no errors detected and all is correct
-    func handleResponseErrors(
+    func checkResponseErrors(
         completion: @escaping (Result<T, APIError>) -> Void
     ) -> Bool {
-        if self.isResponseNil() {
-            if let notFound = self.handleWordNotFoundError(response: self.response!) {
+        if let response = self.response {
+            if let notFound = self.checkWordNotFoundError(response: response) {
                 completion(.failure(notFound))
                 return false
             }
         }
         
-        
-        if let apiError = self.handleTaskError() {
-            completion(.failure(apiError))
-            return false
+        if let apiError = self.checkTaskError() {
+            return giveNoDataError(completion: completion)
         }
         
-        guard handleNoDataError() else {
-            completion(.failure(.noData))
+        guard data != nil else {
+            
             return false
         }
         
         return true
     }
     
-    private func handleNoDataError() -> Bool {
-        return data != nil
-    }
-    
-    private func handleTaskError() -> APIError? {
+    private func checkTaskError() -> APIError? {
         guard let error = self.error else { return nil }
         return .requestFailed(error)
     }
     
-    private func handleWordNotFoundError(response: URLResponse) -> APIError? {
+    
+    private func checkWordNotFoundError(response: URLResponse) -> APIError? {
         if self.getHttpUrlResponse().statusCode == 404 {
             return .wordNotFound
         }
@@ -60,11 +55,14 @@ class ResponseErrorHandler<T: Decodable> {
         return nil
     }
     
-    private func getHttpUrlResponse() -> HTTPURLResponse {
-        return self.response as! HTTPURLResponse
+    private func giveNoDataError(
+        completion: @escaping (Result<T, APIError>) -> Void
+    ) -> Bool {
+        completion(.failure(.noData))
+        return false
     }
     
-    private func isResponseNil() -> Bool {
-        return self.response != nil
+    private func getHttpUrlResponse() -> HTTPURLResponse {
+        return self.response as! HTTPURLResponse
     }
 }

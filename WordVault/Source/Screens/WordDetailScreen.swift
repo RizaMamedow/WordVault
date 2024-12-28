@@ -8,24 +8,29 @@
 import SwiftUI
 
 struct WordDetailScreen: View {
-    @StateObject var controller: WordDetailsController = .init()
+    @ObservedObject var controller: WordDetailsController = .init()
     @State var word: String
     
+    init(word: String) {
+        self.word = word
+    }
+    
     var body: some View {
+        contentView
+            .onAppear() {
+                controller.loadWordData(word: word)
+            }
+    }
+    
+    private var contentView: some View {
         VStack {
-            if !controller.isLoading {
-                WordDetailView(wordData: controller.wordData!)
-            } else if controller.errorMessage != nil {
-                ErrorScreen(errorMessage: controller.errorMessage!)
+            if let wordData = controller.wordData {
+                WordDetailView(wordData: wordData)
+            } else if let errorMessage = controller.errorMessage {
+                ErrorScreen(errorMessage: errorMessage)
             } else {
                 LoadingScreen()
             }
-        }
-        .refreshable {
-            controller.loadWordData(word: word)
-        }
-        .onAppear{
-            controller.loadWordData(word: word)
         }
     }
 }

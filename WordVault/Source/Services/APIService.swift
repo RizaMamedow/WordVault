@@ -7,16 +7,10 @@
 import Foundation
 
 
-final class APIService: NetworkService {
-    private let httpService: NetworkService
+final class APIService {
+    static let shared = APIService()
 
-    init(httpService: NetworkService = NetworkService()) {
-        self.httpService = httpService
-    }
-    
-    static let shared = APIService() // Singleton
-
-    private func getDynamicEndpoint(word: String) -> String {
+    private func generateEndpoint(word: String) -> String {
         return "\(Config.API_URL)/\(word)"
     }
 
@@ -24,8 +18,8 @@ final class APIService: NetworkService {
         word: String,
         completion: @escaping (Result<[DictionaryAPIModel], APIError>) -> Void
     ) {
-        httpService.sendRequest(
-            endpoint: getDynamicEndpoint(word: word),
+        NetworkService.shared.sendRequest(
+            endpoint: generateEndpoint(word: word),
             method: .get,
             completion: completion
         )

@@ -29,7 +29,7 @@ class ResponseHandler<T: Decodable> {
                 response: response
             )
             
-            if errorHandler.handleResponseErrors(completion: completion) {
+            if errorHandler.checkResponseErrors(completion: completion) {
                 self.performTaskDataDecoding(from: data!, completion: completion)
             }
         }.resume()

@@ -11,4 +11,13 @@ enum HTTPMethod: String {
     case post = "POST"
     case put = "PUT"
     case delete = "DELETE"
+    
+    func requiresBody() -> Bool {
+        switch self {
+        case .get, .delete:
+            return false
+        case .post, .put:
+            return true
+        }
+    }
 }
