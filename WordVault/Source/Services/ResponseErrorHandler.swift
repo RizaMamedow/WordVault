@@ -19,7 +19,7 @@ class ResponseErrorHandler<T: Decodable> {
     }
     
     /// if this function returns true it's means no errors detected and all is correct
-    func checkResponseErrors(
+    func handleResponseErrors(
         completion: @escaping (Result<T, APIError>) -> Void
     ) -> Bool {
         if let response = self.response {
@@ -30,15 +30,20 @@ class ResponseErrorHandler<T: Decodable> {
         }
         
         if let apiError = self.checkTaskError() {
-            return giveNoDataError(completion: completion)
+            completion(.failure(apiError))
+            return false
         }
         
-        guard data != nil else {
-            
+        guard checkNoDataError() else {
+            completion(.failure(.noData))
             return false
         }
         
         return true
+    }
+    
+    private func checkNoDataError() -> Bool {
+        return data != nil
     }
     
     private func checkTaskError() -> APIError? {
@@ -46,20 +51,12 @@ class ResponseErrorHandler<T: Decodable> {
         return .requestFailed(error)
     }
     
-    
     private func checkWordNotFoundError(response: URLResponse) -> APIError? {
         if self.getHttpUrlResponse().statusCode == 404 {
             return .wordNotFound
         }
         
         return nil
-    }
-    
-    private func giveNoDataError(
-        completion: @escaping (Result<T, APIError>) -> Void
-    ) -> Bool {
-        completion(.failure(.noData))
-        return false
     }
     
     private func getHttpUrlResponse() -> HTTPURLResponse {
